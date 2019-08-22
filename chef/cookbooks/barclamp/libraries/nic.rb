@@ -820,6 +820,10 @@ class ::Nic
       ::Kernel.system("ovs-vsctl add-port #{@nic} #{slave}")
     end
 
+    def self.ovs_forward_bpdu(nic, forward)
+      ::Kernel.system("ovs-vsctl set Bridge #{@nic} other-config:forward-bpdu=#{forward}")
+    end
+
     def self.create(nic, slaves = [])
       Chef::Log.info("Creating new OVS bridge #{nic}")
       if self.exists?(nic)

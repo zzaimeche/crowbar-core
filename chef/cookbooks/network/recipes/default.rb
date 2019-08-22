@@ -324,6 +324,11 @@ sorted_networks.each do |network|
       Chef::Log.info("Creating OVS bridge #{bridge} for network #{network.name}")
       Nic::OvsBridge.create(bridge)
     end
+
+
+    #zara debugging
+    Nic::OvsBridge.ovs_forward_bpdu(bridge, true)
+
     ifs[br.name] ||= Hash.new
     ifs[br.name]["addresses"] ||= Array.new
     ifs[our_iface.name]["slave"] = true
@@ -589,6 +594,8 @@ when "suse"
       pre_up_script = "/etc/wicked/scripts/#{nic.name}-pre-up"
       ovs_forward_bpdu = ifs[nic.name]["ovs_forward_bpdu"] || false
       is_admin_nwk = if_mapping.key?("admin") && if_mapping["admin"].include?(nic.name)
+
+      Nic::OvsBridge.ovs_forward_bpdu(nic.name, ovs_forward_bpdu)
 
       template pre_up_script do
         owner "root"
